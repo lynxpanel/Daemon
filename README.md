@@ -3,13 +3,13 @@
 
 Lynx Panel Daemon is a self-coded server management daemon inspired by popular solutions like Wings and Pterodactyl Panel. It offers a lightweight alternative for managing and deploying applications on your server.
 
-Features:
+## Features:
 
    - Server Management: Control your server through a user-friendly interface (planned for future development).
    - Application Deployment: Easily deploy and manage applications with streamlined workflows.
    - Customizable: Lynx Panel Daemon is designed to be flexible and adaptable to your specific needs.
 
-Comparison with Wings and Pterodactyl Panel:
+## Comparison with Wings and Pterodactyl Panel:
 
 While Lynx Panel Daemon draws inspiration from these established solutions, it focuses on:
 
@@ -17,7 +17,7 @@ While Lynx Panel Daemon draws inspiration from these established solutions, it f
    - Self-Coded: Provides greater control and customization compared to pre-built frameworks.
    - Community-Driven: Aims to foster a collaborative development environment.
 
-Getting Started (This section will be filled with actual instructions once development progresses)
+## Getting Started (This section will be filled with actual instructions once development progresses)
 
    - Prerequisites:
         Operating System: (Specify compatible OS versions)
@@ -29,7 +29,7 @@ Getting Started (This section will be filled with actual instructions once devel
    - Usage:
         (Describe how to use the daemon's functionalities)
 
-Contribution:
+## Contribution:
 
 Lynx Panel Daemon is a community project. We welcome contributions of all kinds!
 
