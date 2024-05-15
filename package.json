@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "dockerode": "^4.0.2",
     "express": "^4.19.2",
     "os-utils": "^0.0.14"
   }
