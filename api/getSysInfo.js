@@ -1,6 +1,5 @@
 const osu = require('node-os-utils');
 
-
 module.exports = {
   name: "SysInfo",
   method: "GET",
