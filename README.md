@@ -1,7 +1,5 @@
-# Daemon
-Lynx-Panel Daemon
-
-Lynx Panel Daemon: A Lightweight Server Management Daemon
+# Lynx Panel Daemon
+- A Lightweight Server Management Daemon
 
 Lynx Panel Daemon is a self-coded server management daemon inspired by popular solutions like Wings and Pterodactyl Panel. It offers a lightweight alternative for managing and deploying applications on your server.
 
