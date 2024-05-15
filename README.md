@@ -1,0 +1,2 @@
+# Daemon
+Lynx-Panel Daemon
