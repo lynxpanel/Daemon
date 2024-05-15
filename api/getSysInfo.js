@@ -16,14 +16,14 @@ module.exports = {
         res.status(200).json({
             "CPU": cpuUsage + "%",
             "RAM": {
-                "TotalMB": ramTotal.toFixed(0) + 'MB',
-                "UsageMB": ramUsage.toFixed(0) + 'MB',
-                "FreeMB": ramFree.toFixed(0) + 'MB',
+                "Total": ramTotal.toFixed(0) + 'MB',
+                "Used": ramUsage.toFixed(0) + 'MB',
+                "Free": ramFree.toFixed(0) + 'MB',
             },
             "DRIVE": {
-                "TotalGB": driveTotal + 'GB',
-                "UsageGB": driveUsage + 'GB',
-                "FreeGB": driveFree + 'GB',
+                "Total": driveTotal + 'GB',
+                "Used": driveUsage + 'GB',
+                "Free": driveFree + 'GB',
             }
         });
     } catch (error) {
