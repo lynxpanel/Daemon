@@ -184,9 +184,57 @@ installDependencies()
     fi
 };
 
+userInterface()
+{
+    while true; do
+    clear;
+        echo -e "-----------------------------------------------------------------";
+        echo -e "$GREEN[INFO] $BLUE[1]$NC Install the Daemon.";
+        echo -e "$GREEN[INFO] $BLUE[2]$NC Reinstall the Daemon.";
+        echo -e "$GREEN[INFO] $BLUE[3]$NC Start the Daemon.";
+        echo -e "$GREEN[INFO] $BLUE[4]$NC Stop the Daemon.";
+        echo -e "$GREEN[INFO] $BLUE[5]$NC Activate the Daemon Maintenance Mode.";
+        echo -e "$GREEN[INFO] $BLUE[6]$NC Edit the Daemon Configs.";
+        echo -e "$GREEN[INFO] $BLUE[0]$NC Close this Script.";
+        echo -e "-----------------------------------------------------------------";
+        echo -e "$BLUE[INFO]$NC Choose what you want to do: " && read number;
+
+    if [[ "$number" =~ ^[0-9]+$ ]]; then
+        case "$number" in
+            1)
+                echo "not yet implemented.";
+                ;;
+            2)
+                echo "not yet implemented.";
+                ;;
+            3)
+                echo "not yet implemented.";
+                ;;
+            4)
+                echo "not yet implemented.";
+                ;;
+            5)
+                echo "not yet implemented.";
+                ;;
+            6)
+                echo "not yet implemented.";
+                ;;
+            0)
+                echo -e "$GREEN[INFO]$NC Exiting . . .";
+                exit 1;
+                ;;
+        esac;
+    else
+        echo -e "$YELLOW[WARN]$NC You did not enter a number."
+    fi
+    done
+};
+
 # Main code
 clear && echo -e "$GREEN[INFO]$NC Installer is running on$BOLD Version $VER $RESET";
+
 checkArgs "$@";
 checkRoot "$DEBUG";
 checkDistro "$DEBUG";
 installDependencies "$DEBUG";
+userInterface
