@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const loadAPIS = require('./assets/apiHandler');
+const loadAPIS = require('./assets/utils/apiHandler');
 const app = express();
 const ip = '0.0.0.0';
 const port = 8443;

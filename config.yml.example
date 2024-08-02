@@ -1,0 +1,50 @@
+####################
+# General Configs.
+####################
+
+panel_domain: "node.lynx-panel.de" # The Domain/IP of the Panel. (Use "*" if you connect this Node to more than one Panel!)
+allowed_ips: [] # 'IPs' - Panel IP | '*' - Wildcard allows every IP.
+api_token: "" # IMPORTANT!
+
+####################
+# Server Configs.
+####################
+
+site: "" # Leave empty if you use CUSTOM as protocol!
+protocol: "CUSTOM" # HTTP - No SSL | HTTPS - SSL | CUSTOM - IP/Port.
+ip: 0.0.0.0 # Leave empty if you use HTTP/HTTPS!
+port: 8443 # Leave empty if you use HTTP/HTTPS!
+
+####################
+# SFTP/FTP Configs.
+####################
+
+sftp_protocol: "SFTP" # FTP - Not Secure | SFTP - Secure | Disabled - disabled.
+sftp_port: 8080 # The port SFTP/FTP will listen to. Leave empty if you disabled sftp/ftp.
+
+####################
+# SSH Configs.
+####################
+
+ssh_protocol: "SSH" # SSH - Secure | Disabled - disabled.
+ssh_port: 44 # The port SSH will listen to. Leave empty if you disabled SSH.
+
+####################
+# Database Configs.
+####################
+
+database: "SQLITE" # SQLITE - Slow but reliable | MYSQL - Fast and reliable | MongoDB - will be added in the Future!
+database_address: 0.0.0.0 # The ip the daemon will connect to. Leave empty if you use SQLITE.
+database_port: 3366 # The port the daemon will connect to. Leave empty if you use SQLITE.
+
+####################
+# Mount Configs. (Coming Soon.)
+####################
+
+mounts: []
+
+####################
+# Docker Configs.
+####################
+
+volume_path: "var/lib/lynx-panel" # The directory where the data will be stored for docker.
