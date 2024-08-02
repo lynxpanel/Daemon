@@ -237,4 +237,4 @@ checkArgs "$@";
 checkRoot "$DEBUG";
 checkDistro "$DEBUG";
 installDependencies "$DEBUG";
-userInterface
+userInterface "$DEBUG";
