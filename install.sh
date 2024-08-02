@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# script directory.
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 # gets linux id & codename.
 . /etc/os-release;
 ID="$ID";
@@ -15,6 +18,16 @@ BLUE="\033[0;34m"
 YELLOW="\033[0;33m"
 RED="\033[0;34m"
 NC="\033[0;0m"
+
+checkRoot()
+{
+    # checks if the script gets executed as root or via sudo.
+
+    if [ "$EUID" -ne 0 ]; then
+        echo -e "$YELLOW[WARN]$NC Execute the script as root or with sudo.";
+        exit 1;
+    fi
+}
 
 checkDistro()
 {
@@ -66,10 +79,12 @@ installNodeJS()
 
     # informs the user and updates the system.
     echo -e "$GREEN[INFO]$NC Updating the system.";
-    nohup sudo apt update -y > /tmp/apt_update.log 2>&1
-    nohup sudo apt upgrade -y > /tmp/apt_upgrade.log 2>&1
+    nohup apt update > "$SCRIPT_DIR/tmp/apt_update.log" 2>&1
+    nohup apt upgrade -y > "$SCRIPT_DIR/tmp/apt_upgrade.log" 2>&1
 };
 
 # Main code
+
+checkRoot
 checkDistro
 installNodeJS
