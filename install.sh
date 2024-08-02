@@ -3,12 +3,15 @@
 # script directory.
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# script Version. DON'T TOUCH!
+VER=1.0
+
 # gets linux id & codename.
 . /etc/os-release;
 ID="$ID";
 CODENAME="$VERSION_CODENAME";
 
-# supported ids & codenames.
+# supported ids & codenames. DON'T TOUCH!
 SUPPORTED_IDS=(debian ubuntu);
 SUPPORTED_VERSION_CODENAMES=(bookworm);
 
@@ -19,6 +22,9 @@ YELLOW="\033[0;33m";
 RED="\033[0;34m";
 PURPLE="\033[0;35m";
 NC="\033[0;0m";
+
+BOLD='\033[1m'
+RESET='\033[0m'
 
 # Debug boolean.
 DEBUG=false;
@@ -31,7 +37,7 @@ checkArgs()
             DEBUG=true;
         elif [ "$arg" = "--help" ] 
         then
-            echo "Use --debug to activate debug mode.";
+            echo "Use --debug to activate debug mode. (Debug mode disables many checks. NEVER USE IN PRODUCTION!)";
             echo "Use --help to see this.";
             exit 1;
         fi
@@ -40,72 +46,113 @@ checkArgs()
 
 checkRoot()
 {
-    # checks if the script gets executed as root or via sudo.
-
-    if [ "$EUID" -ne 0 ]; then
-        echo -e "$YELLOW[WARN]$NC Execute the script as root or with sudo.";
-        exit 1;
+    # checks if the script gets executed as root or via sudo & if the debug mode is enabled.
+    if [ "$1" = true ]; then
+        if [ "$EUID" -ne 0 ]; then
+            echo -e "$PURPLE[DEBUG]$NC You run this script in the debug mode. Auto-exit is disabled.";
+            echo -e "$YELLOW[WARN]$NC Execute the script as root or with sudo.";
+        fi
+    else
+        if [ "$EUID" -ne 0 ]; then
+            echo -e "$YELLOW[WARN]$NC Execute the script as root or with sudo.";
+            exit 1;
+        fi
     fi
-}
+};
 
 checkDistro()
 {
-    # informs the user about the process.
+    if [ "$1" = true ]; then
+        # informs the user about the process.
+        echo -e "$BLUE[INFO]$NC Checking if your distro is compatible with this version of the installer.";
+        
+        # loops through SUPPORTED_IDS.
+        ID_SUPPORTED=false;
+        for i in "${SUPPORTED_IDS[@]}"; do
+            if [ "$i" == "$ID" ]; then
+                ID_SUPPORTED=true;
+                break
+            fi
+        done
 
-    clear && echo -e "$BLUE[INFO]$NC Checking if your distro is compatible with this version of the installer.";
-    
-    # loops through SUPPORTED_IDS.
-
-    ID_SUPPORTED=false;
-    for i in "${SUPPORTED_IDS[@]}"; do
-        if [ "$i" == "$ID" ]; then
-            ID_SUPPORTED=true;
-            break
+        # checks if the ID is supported yet or not.
+        if [ "$ID_SUPPORTED" = false ]; then
+            echo -e "$PURPLE[DEBUG]$NC You run this script in the debug mode. Auto-exit is disabled.";
+            echo -e "$YELLOW[WARN]$NC $BOLD $ID $RESET is not yet supported!";
         fi
-    done
 
-    # checks if the ID is supported yet or not.
+        # loops through SUPPORTED_VERSION_CODENAMES.
+        CODENAME_SUPPORTED=false;
+        for v in "${SUPPORTED_VERSION_CODENAMES[@]}"; do
+            if [ "$v" == "$CODENAME" ]; then
+                CODENAME_SUPPORTED=true;
+                break
+            fi
+        done
 
-    if [ "$ID_SUPPORTED" = false ]; then
-        echo -e "$YELLOW[WARN]$NC $ID is not yet supported!";
-        exit 1;
-    fi
-
-    # loops through SUPPORTED_VERSION_CODENAMES.
-
-    CODENAME_SUPPORTED=false;
-    for v in "${SUPPORTED_VERSION_CODENAMES[@]}"; do
-        if [ "$v" == "$CODENAME" ]; then
-            CODENAME_SUPPORTED=true;
-            break
+        # checks if the CODENAME is supported yet or not.
+        if [ "$CODENAME_SUPPORTED" = false ]; then
+            echo -e "$PURPLE[DEBUG]$NC You run this script in the debug mode. Auto-exit is disabled.";
+            echo -e "$YELLOW[WARN]$NC $BOLD $CODENAME $RESET is not yet supported!";
         fi
-    done
 
-    # checks if the CODENAME is supported yet or not.
+        # returns success if Linux is supported.
+        echo -e "$GREEN[INFO]$NC Check complete. Your distro is compatible with this version of the installer.";
+    else
+        # informs the user about the process.
+        echo -e "$BLUE[INFO]$NC Checking if your distro is compatible with this version of the installer.";
+        
+        # loops through SUPPORTED_IDS.
+        ID_SUPPORTED=false;
+        for i in "${SUPPORTED_IDS[@]}"; do
+            if [ "$i" == "$ID" ]; then
+                ID_SUPPORTED=true;
+                break
+            fi
+        done
 
-    if [ "$CODENAME_SUPPORTED" = false ]; then
-        echo -e "$YELLOW[WARN]$NC $ID $CODENAME is not yet supported!";
-        exit 1;
+        # checks if the ID is supported yet or not.
+        if [ "$ID_SUPPORTED" = false ]; then
+            echo -e "$YELLOW[WARN]$NC $BOLD $ID $RESET is not yet supported!";
+            exit 1;
+        fi
+
+        # loops through SUPPORTED_VERSION_CODENAMES.
+        CODENAME_SUPPORTED=false;
+        for v in "${SUPPORTED_VERSION_CODENAMES[@]}"; do
+            if [ "$v" == "$CODENAME" ]; then
+                CODENAME_SUPPORTED=true;
+                break
+            fi
+        done
+
+        # checks if the CODENAME is supported yet or not.
+        if [ "$CODENAME_SUPPORTED" = false ]; then
+            echo -e "$YELLOW[WARN]$NC $BOLD $CODENAME $RESET is not yet supported!";
+            exit 1;
+        fi
+
+        # returns success if Linux is supported.
+        echo -e "$GREEN[INFO]$NC Check complete. Your distro is compatible with this version of the installer.";
     fi
-
-    # returns success if Linux is supported.
-
-    echo -e "$GREEN[INFO]$NC Check complete. Your distro is compatible with this version of the installer.";
 };
 
 installDependencies()
 {
+    # creates the tmp directory for debugging purposes
+    mkdir -p "$SCRIPT_DIR/tmp";
+
     # checks if the debug arg is set.
     if [ "$1" = true ]; then
         # informs the user and updates the system.
-        echo -e "$GREEN[INFO]$NC Updating the system.";
+        echo -e "$BLUE[INFO]$NC Updating the system.";
         echo -e "$PURPLE[DEBUG]$NC apt update -y";
         apt update -y;
         echo -e "$PURPLE[DEBUG]$NC apt upgrade -y";
         apt upgrade -y;
 
         # informs the user and installs NodeJS 
-        echo -e "$GREEN[INFO]$NC Installing NodeJS.";
+        echo -e "$BLUE[INFO]$NC Installing NodeJS.";
         echo -e "$PURPLE[DEBUG]$NC apt install nodejs npm -y";
         apt install nodejs npm -y;
         echo -e "$PURPLE[DEBUG]$NC wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash";
@@ -118,26 +165,28 @@ installDependencies()
         [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion";
         echo -e "$PURPLE[DEBUG]$NC nvm install --lts";
         nvm install --lts;
+        echo -e "$GREEN[INFO]$NC Dependencies installed."
     else
         # informs the user and updates the system.
-        echo -e "$GREEN[INFO]$NC Updating the system.";
+        echo -e "$BLUE[INFO]$NC Updating the system.";
         nohup apt update -y > "$SCRIPT_DIR/tmp/apt_update.log" 2>&1;
         nohup apt upgrade -y > "$SCRIPT_DIR/tmp/apt_upgrade.log" 2>&1;
 
         # informs the user and installs NodeJS 
-        echo -e "$GREEN[INFO]$NC Installing NodeJS.";
+        echo -e "$BLUE[INFO]$NC Installing NodeJS.";
         nohup apt install nodejs npm -y > "$SCRIPT_DIR/tmp/apt_install.log" 2>&1;
-        wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash > /dev/null 2>&1;
+        wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash > $SCRIPT_DIR/tmp/wget.log 2>&1;
         export NVM_DIR="$HOME/.nvm";
         [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh";
         [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion";
-        nvm install --lts > /dev/null 2>&1;
+        nvm install --lts > /$SCRIPT_DIR/tmp/nvm.log 2>&1;
+        echo -e "$GREEN[INFO]$NC Dependencies installed."
     fi
 };
 
 # Main code
-
-checkArgs "$@"
-checkRoot
-checkDistro
-installDependencies "$DEBUG"
+clear && echo -e "$GREEN[INFO]$NC Installer is running on$BOLD Version $VER $RESET";
+checkArgs "$@";
+checkRoot "$DEBUG";
+checkDistro "$DEBUG";
+installDependencies "$DEBUG";
