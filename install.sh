@@ -59,14 +59,17 @@ checkDistro()
     # returns success if Linux is supported.
 
     echo -e "$GREEN[INFO]$NC Check complete. Your distro is compatible with this version of the installer.";
-}
+};
 
 installNodeJS()
 {
 
     # informs the user and updates the system.
-    
-}
+    echo -e "$GREEN[INFO]$NC Updating the system.";
+    nohup sudo apt update -y > /tmp/apt_update.log 2>&1
+    nohup sudo apt upgrade -y > /tmp/apt_upgrade.log 2>&1
+};
 
 # Main code
 checkDistro
+installNodeJS
