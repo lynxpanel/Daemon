@@ -8,7 +8,7 @@ function ifFile(app, dir){
         app[mod.method.toLowerCase()](mod.path, (req, res) => {
             mod.callback(req, res, mainDir);
         });
-        console.log(`Loaded: ${mod.name} | ${mod.method} | ${mod.path}`);
+        console.log(`\x1b[0;32m[INFO]\x1b[0;30m Loaded: ${mod.name} | ${mod.method} | ${mod.path}`);
     } catch (err) {
         console.log(err);
     }
