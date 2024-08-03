@@ -1,11 +1,14 @@
 const FTPSrv = require('ftp-srv');
-module.exports = function FTPService(ip, port, path) {
-    console.log('\x1b[0;34m[INFO]\x1b[0;0m Starting FTP Server.')
+module.exports = async function FTPService(ip, port, path) {
+    console.log('\x1b[0;34m[INFO]\x1b[0;30m Starting FTP Server.')
     const ftpServer = new FTPSrv({
         url: `ftp://${ip}:${port}`,
         anonymous: false,
         log: {
+            warn: () => {},
+            error: () => {},
             info: () => {},
+            debug: () => {},
           },
     });
 
@@ -17,6 +20,6 @@ module.exports = function FTPService(ip, port, path) {
 
     ftpServer.listen()
         .then(() => {
-        console.log(`\x1b[0;32m[INFO]\x1b[0;0m FTP Server started on: ftp://${ip}:${port}`);
+        console.log(`\x1b[0;32m[INFO]\x1b[0;30m FTP Server started on: ftp://${ip}:${port}`);
     });
 };
