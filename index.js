@@ -4,6 +4,7 @@ const yaml = require('js-yaml');
 const express = require('express');
 const bodyParser = require('body-parser');
 const loadAPIS = require('./utils/apiHandler');
+const checkSFTPConfig = require('./utils/checkSFTPConfig');
 let config = yaml.load(fs.readFileSync(path.resolve('./config.yml'), 'utf8'));
 const app = express();
 
@@ -36,5 +37,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.listen(config.port, config.ip, () => {
     console.log(`\x1b[0;32m[INFO]\x1b[0;30m Daemon running on: ${config.ip}:${config.port}`);
+    checkSFTPConfig();
     loadAPIS(app, __dirname);
 });
