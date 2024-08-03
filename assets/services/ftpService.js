@@ -1,21 +1,18 @@
 const FTPSrv = require('ftp-srv');
-module.exports = function FTPService(ip, port, path){
+module.exports = function FTPService(ip, port, path) {
     const ftpServer = new FTPSrv({
         url: `ftp://${ip}:${port}`,
         anonymous: false
     });
 
     ftpServer.on('login', ({ connection, username, password }, resolve, reject) => {
-        if ((username === 'root' && password === 'rootpassword') ||
-            (username === 'kenley' && password === 'kenleypassword')) {
-            resolve({ root: userRoot });
-        } else {
-            reject(new Error('Invalid username or password'));
+        if(username === 'Leon' && password === '1337'){
+            return resolve({ root:"/" });    
         }
     });
 
-    ftpServer.listen(port, ip)
+    ftpServer.listen()
         .then(() => {
-        console.log('FTP server listening on port 21');
+        console.log('FTP server listening on port');
     });
 };

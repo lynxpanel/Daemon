@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const yaml = require('js-yaml');
 const checkPort = require('./checkPort');
-const FTPService = require('../assets/services/sftpService');
+const FTPService = require('../assets/services/ftpService');
 const SFTPService = require('../assets/services/sftpService');
 let config = yaml.load(fs.readFileSync(path.resolve('./config.yml'), 'utf8'));
 

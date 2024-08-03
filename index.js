@@ -12,7 +12,6 @@ app.use((req, res, next) => {
     let config = yaml.load(fs.readFileSync(path.resolve('./config.yml'), 'utf8'));
     const clientIP = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     const cleanedIP = clientIP.split(',')[0].trim();
-    console.log(config.allowed_ips)
     
     if (config.allowed_ips.includes(cleanedIP) || config.allowed_ips[0] === '*') {
         next();
