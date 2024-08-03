@@ -2,3 +2,4 @@ node_modules
 tmp
 config.yml
 assets/certs/*
+assets/keys/*
