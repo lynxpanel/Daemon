@@ -1,6 +1,6 @@
 const path = require('path');
 const { timingSafeEqual } = require('crypto');
-const { readFileSync, stat, statSync, existsSync } = require('fs');
+const { readFileSync, stat, statSync, existsSync, readdir } = require('fs');
 const generateSFTPkey = require(path.resolve('./utils/generateSFTPkey'));
 const { utils: { parseKey }, Server, SFTP_STATUS_CODE } = require('ssh2');
 
@@ -49,77 +49,77 @@ module.exports = async function SFTPService(ip, port, rootPath, certPath) {
             client.on('session', (accept, reject) => {
                 const session = accept();
                 session.on('sftp', (accept, reject) => {
-                    console.log('\x1b[0;34m[ERROR]\x1b[0;30m  SFTP session started.');
-
+                    console.log('\x1b[0;34m[INFO]\x1b[0;30m SFTP session started.');
+                    const sftp = accept();
                     let currentDir = rootPath;
 
-                    sftp.on('pwd', (reqid) => {
-                        sftp.name(reqid, [{
-                            filename: path.basename(currentDir),
-                            longname: `drwxr-xr-x   1 owner group      0 Aug  5 14:44 ${currentDir}`,
-                            attrs: {
-                                mode: statSync(currentDir).mode,
-                                size: statSync(currentDir).size,
-                                atime: new Date(),
-                                mtime: new Date()
-                            }
-                        }]);
-                    });
-
-                    sftp.on('chdir', (reqid, reqPath) => {
+                    // Handler für `pwd` (Print Working Directory)
+                    sftp.on('REALPATH', (reqid, reqPath) => {
                         const fullPath = path.resolve(currentDir, reqPath);
-                        if (fullPath.startsWith(rootPath) && existsSync(fullPath) && statSync(fullPath).isDirectory()) {
-                            currentDir = fullPath;
-                            sftp.status(reqid, SFTP_STATUS_CODE.OK);
+                        if (fullPath.startsWith(rootPath) && existsSync(fullPath)) {
+                            sftp.name(reqid, [{
+                                filename: path.basename(fullPath),
+                                longname: `drwxr-xr-x   1 owner group      0 ${new Date().toUTCString()} ${fullPath}`,
+                                attrs: {
+                                    mode: statSync(fullPath).mode,
+                                    size: statSync(fullPath).size,
+                                    atime: new Date(),
+                                    mtime: new Date()
+                                }
+                            }]);
                         } else {
                             sftp.status(reqid, SFTP_STATUS_CODE.FAILURE);
                         }
                     });
 
-                    sftp.on('readdir', (reqid, reqPath) => {
+                    // Handler für `readdir` (Read Directory)
+                    sftp.on('READDIR', (reqid, reqPath) => {
                         const fullPath = path.resolve(currentDir, reqPath);
                         if (fullPath.startsWith(rootPath) && existsSync(fullPath) && statSync(fullPath).isDirectory()) {
-                            fs.readdir(fullPath, (err, files) => {
-                                if (err) {
-                                    sftp.status(reqid, SFTP_STATUS_CODE.FAILURE);
-                                } else {
-                                    const fileList = files.map(file => ({
+                            try {
+                                const files = readdirSync(fullPath);
+                                const fileList = files.map(file => {
+                                    const filePath = path.join(fullPath, file);
+                                    return {
                                         filename: file,
-                                        longname: `drwxr-xr-x   1 owner group      0 Aug  5 14:44 ${file}`,
+                                        longname: `drwxr-xr-x   1 owner group      0 ${new Date().toUTCString()} ${file}`,
                                         attrs: {
-                                            mode: statSync(path.join(fullPath, file)).mode,
-                                            size: statSync(path.join(fullPath, file)).size,
+                                            mode: statSync(filePath).mode,
+                                            size: statSync(filePath).size,
                                             atime: new Date(),
                                             mtime: new Date()
                                         }
-                                    }));
-                                    sftp.name(reqid, fileList);
-                                }
-                            });
+                                    };
+                                });
+                                sftp.name(reqid, fileList);
+                            } catch (err) {
+                                sftp.status(reqid, SFTP_STATUS_CODE.FAILURE);
+                            }
                         } else {
                             sftp.status(reqid, SFTP_STATUS_CODE.FAILURE);
                         }
                     });
 
-                    sftp.on('stat', (reqid, reqPath) => {
+                    // Handler für `stat` (Stat File)
+                    sftp.on('STAT', (reqid, reqPath) => {
                         const fullPath = path.resolve(currentDir, reqPath);
                         if (fullPath.startsWith(rootPath) && existsSync(fullPath)) {
-                            stat(fullPath, (err, stats) => {
-                                if (err) {
-                                    sftp.status(reqid, SFTP_STATUS_CODE.FAILURE);
-                                } else {
-                                    sftp.attrs(reqid, {
-                                        mode: stats.mode,
-                                        size: stats.size,
-                                        atime: stats.atime,
-                                        mtime: stats.mtime
-                                    });
-                                }
-                            });
+                            try {
+                                const stats = statSync(fullPath);
+                                sftp.attrs(reqid, {
+                                    mode: stats.mode,
+                                    size: stats.size,
+                                    atime: stats.atime,
+                                    mtime: stats.mtime
+                                });
+                            } catch (err) {
+                                sftp.status(reqid, SFTP_STATUS_CODE.FAILURE);
+                            }
                         } else {
                             sftp.status(reqid, SFTP_STATUS_CODE.FAILURE);
                         }
                     });
+                    
 
                     // Implementiere hier weitere Events wie `mkdir`, `rmdir`, `unlink`, `open`, `read`, `write`, etc.
 
