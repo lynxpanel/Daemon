@@ -16,7 +16,7 @@ ip: 0.0.0.0 # Leave empty if you use HTTP/HTTPS!
 port: 8443 # Leave empty if you use HTTP/HTTPS!
 
 ####################
-# SFTP/FTP Configs.
+# File Server Configs.
 ####################
 
 sftp_protocol: "SFTP" # FTP - Not Secure | SFTP - Secure | Disabled - disabled.
