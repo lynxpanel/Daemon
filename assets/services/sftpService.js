@@ -13,7 +13,7 @@ function checkValue(input, allowed) {
     return (!autoReject && isMatch);
 }
 
-/*module.exports =*/ async function SFTPService(ip, port, rootPath, certPath) {
+module.exports = async function SFTPService(ip, port, rootPath, certPath) {
     console.log(`\x1b[0;34m[INFO]\x1b[0;30m SFTP Server starting on: ${ip}:${port}`);
 
     const resCertPath = path.join(__dirname, "../../", certPath);
