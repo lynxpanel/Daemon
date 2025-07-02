@@ -1,3 +1,6 @@
+// DO NOT TOUCH
+global.D_VERSION = "1.0.0";
+
 const fs = require('fs');
 const path = require('path');
 const yaml = require('js-yaml');
@@ -36,6 +39,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.listen(config.port, config.ip, () => {
     console.log(`\x1b[0;32m[INFO]\x1b[0;30m Daemon running on: ${config.ip}:${config.port}`);
-    checkSFTPConfig();
+    // checkSFTPConfig();
     loadAPIS(app, __dirname);
 });

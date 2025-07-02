@@ -1,9 +1,9 @@
 const docker = require('dockerode')(); // Assuming you have 'dockerode' installed
 
 module.exports = {
-  name: "CreateMinecraftContainer",
+  name: "CreateContainer",
   method: "POST",
-  path: "/api/minecraft/create",
+  path: "/api/docker/create", 
   callback: async (req, res) => {
     try {
       const { name, memory, cpu } = req.body;
