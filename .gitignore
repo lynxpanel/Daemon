@@ -3,3 +3,4 @@ tmp
 config.yml
 assets/certs/*
 assets/keys/*
+test/
