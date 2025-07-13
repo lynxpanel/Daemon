@@ -2,5 +2,6 @@ node_modules
 tmp
 config.yml
 assets/certs/*
+!assets/certs/.gitkeep
 assets/keys/*
-test/
+test
