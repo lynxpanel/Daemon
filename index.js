@@ -39,8 +39,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.listen(config.port, config.ip, async () => {
-    if (!process.getuid ? process.getuid() !== 0 : false) {
-        console.log(``);
+    if (!(process.getuid ? process.getuid() === 0 : false)) {
+        console.log(`\x1b[0;31m[ERROR]\x1b[0;30m Cannot continue. Error_Code: Service is not running with root privileges`);
         process.exit(1);
     }
         
