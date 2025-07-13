@@ -127,27 +127,31 @@ module.exports = async function SFTPService(ip, port, rootPath, certPath) {
                             fs.statSync(fullPath).isDirectory()
                         ) {
                             try {
-                            let files = fs.readdirSync(fullPath);
+                                let files = fs.readdirSync(fullPath);
 
-                            if (files.length === 0) {
-                                const emptyFilePath = path.join(fullPath, '.empty');
-                                fs.writeFileSync(emptyFilePath, '');
-                                files = fs.readdirSync(fullPath);
-                            }
+                                if (files.length === 0) {
+                                    fs.writeFileSync(path.join(fullPath, '.empty'), '');
+                                    files = fs.readdirSync(fullPath);
+                                }
 
-                            const handle = crypto.randomBytes(16);
+                                const otherFiles = files.filter(f => f !== '.empty');
 
-                            directoryHandles.set(handle.toString('hex'), {
-                                path: fullPath,
-                                files: files,
-                                position: 0
-                            });
+                                if (files.includes('.empty') && otherFiles.length > 0) 
+                                    fs.rmSync(path.join(fullPath, '.empty'));
 
-                            sftp.handle(reqid, handle);
-                            } catch (err) {
-                                console.error('OPENDIR error:', err);
-                                return sftp.status(reqid, 4);
-                            }
+                                const handle = crypto.randomBytes(16);
+
+                                directoryHandles.set(handle.toString('hex'), {
+                                    path: fullPath,
+                                    files: files,
+                                    position: 0
+                                });
+
+                                sftp.handle(reqid, handle);
+                                } catch (err) {
+                                    console.error('OPENDIR error:', err);
+                                    return sftp.status(reqid, 4);
+                                }
                         } else {
                             return sftp.status(reqid, 4);
                         }
@@ -177,6 +181,9 @@ module.exports = async function SFTPService(ip, port, rootPath, certPath) {
                         for (const file of chunk) {
                             try {
                                 const filePath = path.join(dirPath, file);
+
+                                if (!fs.readdirSync(dirPath).includes(file)) continue;
+
                                 const stats = fs.lstatSync(filePath);
 
                                 list.push({

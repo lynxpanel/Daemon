@@ -10,7 +10,7 @@ module.exports = async function checkSFTPConfig(){
         const protocol = config.sftp_protocol;
         const ip = config.sftp_ip;
         const port = config.sftp_port;
-        const cert = config.sftp_pub_key;
+        const cert = config.sftp_host_rsa_key;
         const volume_path = path.resolve(config.volume_path);
 
         if (protocol.toLowerCase() === 'disabled') return; // Check if SFTP/FTP disabled.

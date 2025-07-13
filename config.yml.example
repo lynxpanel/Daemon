@@ -22,7 +22,7 @@ port: 8443 # Leave empty if you use HTTP/HTTPS!
 sftp_protocol: "SFTP" # FTP - Not Secure | SFTP - Secure | Disabled - disabled.
 sftp_ip: 0.0.0.0 # The ip SFTP/FTP will listen to. Leave empty if you disabled sftp/ftp.
 sftp_port: 8080 # The port SFTP/FTP will listen to. Leave empty if you disabled sftp/ftp.
-sftp_pub_key: "./assets/certs" # The path of the SFTP public Key
+sftp_host_rsa_key: "./assets/certs" # The path of the SFTP public Key
 
 ####################
 # SSH Configs.
