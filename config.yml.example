@@ -51,6 +51,6 @@ mounts: []
 
 volume_path: "/var/lib/lynx-panel/volumes" # The directory where the data will be stored for container.
 backup_path: "/var/lib/lynx-panel/backup" # The directory where the backups will be stored for container.
-archive_path: "/var/lib/lynx-panel/backup" # The directory where the archive data will be stored for container.
+archive_path: "/var/lib/lynx-panel/achrive" # The directory where the archive data will be stored for container.
 
 timezone: Europe/Stockholm # The timezone of the container.
