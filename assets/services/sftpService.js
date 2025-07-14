@@ -36,6 +36,8 @@ function sftpFlagsToFsFlags(flags) {
 }
 
 module.exports = async function SFTPService(ip, port, rootPath, certPath) {
+    console.log('\x1b[0;34m[INFO]\x1b[0;30m Starting SFTP Server.');
+    
     const keyPath = path.resolve(certPath);
 
     // Generate key if missing
@@ -412,7 +414,7 @@ module.exports = async function SFTPService(ip, port, rootPath, certPath) {
         console.error('SFTP server error:', err);
     });
 
-    server.listen(port, ip, () => {
-        console.log(`SFTP Server listening on: ${ip}:${port}`);
+    await server.listen(port, ip, () => {
+        console.log(`\x1b[0;32m[INFO]\x1b[0;30m SFTP Server started on: sftp://${ip}:${port}`);
     });
 };
